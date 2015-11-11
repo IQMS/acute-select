@@ -11,7 +11,7 @@
 // Note:- ac-options works like ng-options, but does not support option groups
 
 angular.module("acute.select", [])
-.directive("acSelect", function($parse, acuteSelectService) {
+.directive("acSelect", ["$parse", "acuteSelectService", function($parse, acuteSelectService) {
     var defaultSettings = acuteSelectService.getSettings();
     return {
         restrict: "EAC",
@@ -112,7 +112,7 @@ angular.module("acute.select", [])
             $scope.filterTypeChange = function() {
                 if (dataFunctionFiltering) {
                     $scope.allDataLoaded = false;
-                }
+            }
                 $scope.filterData();
                 giveFocusToTextbox();
             };
@@ -138,13 +138,13 @@ angular.module("acute.select", [])
             }
 
             function giveFocusToTextbox() {
-                // Set flag to fire the ac-focus directive
-                if ($scope.settings.comboMode) {
-                    $scope.comboFocus = true;
-                }
-                else {
-                    $scope.searchBoxFocus = true;
-                }
+                        // Set flag to fire the ac-focus directive
+                        if ($scope.settings.comboMode) {
+                            $scope.comboFocus = true;
+                        }
+                        else {
+                            $scope.searchBoxFocus = true;
+                        }
             }
 
             $scope.setInitialSelection = function() {
@@ -253,7 +253,7 @@ angular.module("acute.select", [])
                     var minWidth = parseInt($scope.settings.minWidth);
                     if (isNaN(minWidth) || minWidth < 220) {
                         $scope.settings.minWidth = "220px";
-                    }
+            }
                 }
             }
 
@@ -266,7 +266,7 @@ angular.module("acute.select", [])
                 }
 
                 // If in combo mode and can add custom values
-                if ($scope.settings.comboMode && $scope.comboText && $scope.settings.allowCustomText) {
+                    if ($scope.settings.comboMode && $scope.comboText && $scope.settings.allowCustomText) {
                     // If combo text doesn't match the current selected item text, show message to add.
                     var selectedText = $scope.selectedItem ? $scope.selectedItem.text : "";
 
@@ -301,27 +301,27 @@ angular.module("acute.select", [])
 
             $scope.$watch("model", function(newValue, oldValue) {
                 if (newValue != oldValue) {
-                    if ($scope.modelUpdating) {
-                        $scope.modelUpdating = false;
-                    }
-                    else if (!newValue && !oldValue) {
-                        // Do nothing
-                    }
-                    else if (newValue && !oldValue) {
-                        // Model no longer null
+                if ($scope.modelUpdating) {
+                    $scope.modelUpdating = false;
+                }
+                else if (!newValue && !oldValue) {
+                    // Do nothing
+                }
+                else if (newValue && !oldValue) {
+                    // Model no longer null
+                    $scope.setInitialSelection();
+                }
+                else if (oldValue && !newValue) {
+                    // Model cleared
+                    $scope.setInitialSelection();
+                }
+                else {
+                    // Check that the text is different
+                    if (!$scope.textField || newValue[$scope.textField] !== oldValue[$scope.textField]) {
+                        // Model has been changed in the parent scope
                         $scope.setInitialSelection();
                     }
-                    else if (oldValue && !newValue) {
-                        // Model cleared
-                        $scope.setInitialSelection();
-                    }
-                    else {
-                        // Check that the text is different
-                        if (!$scope.textField || newValue[$scope.textField] !== oldValue[$scope.textField]) {
-                            // Model has been changed in the parent scope
-                            $scope.setInitialSelection();
-                        }
-                    }
+                }
                 }
             });
 
@@ -611,7 +611,7 @@ angular.module("acute.select", [])
                         $scope.searchText = "";
                         clearClientFilter();
                     }
-                }                
+                }
             }
 
             function fireChangeEvent() {
@@ -629,12 +629,14 @@ angular.module("acute.select", [])
                     selectedText = $scope.selectedItem ? $scope.selectedItem.text : "";
                     if (customText.length > 0 && customText !== selectedText) {
                         // Create new data item
-                        dataItem = {};
-                        dataItem[$scope.textField] = customText;
-
                         // add the key field if it is defined.
                         if ($scope.keyField) {
+                        dataItem = {};
                             dataItem[$scope.keyField] = customText;
+                        }
+                        // set data item to custom text.
+                        else {
+                            dataItem = customText;
                         }
                         $scope.modelUpdating = true;
                         $scope.model = dataItem;
@@ -649,8 +651,8 @@ angular.module("acute.select", [])
 
             function enterKey() {
                 if ($scope.popupVisible) {
-                    confirmSelection($scope.selectedItem);
-                }
+                confirmSelection($scope.selectedItem);
+            }
             }
 
             function downArrowKey() {
@@ -801,11 +803,11 @@ angular.module("acute.select", [])
                 var itemCount = $scope.allItems.length;
 
                 if (dataFunctionFiltering) {
-                    // If search text is blank OR paging is enabled && current number of items is >= pageSize (or zero)
-                    if ($scope.searchText === "" || ($scope.settings.pageSize && (itemCount >= $scope.settings.pageSize || itemCount === 0))) {
-                        // Data needs to be re-loaded.
-                        $scope.allDataLoaded = false;
-                    }
+                // If search text is blank OR paging is enabled && current number of items is >= pageSize (or zero)
+                if ($scope.searchText === "" || ($scope.settings.pageSize && (itemCount >= $scope.settings.pageSize || itemCount === 0))) {
+                    // Data needs to be re-loaded.
+                    $scope.allDataLoaded = false;
+                }
                 }
 
                 if ($scope.allDataLoaded) {
@@ -921,10 +923,10 @@ angular.module("acute.select", [])
             }
         }
     };
-})
+}])
 
 // Directive to set focus to an element when a specified expression is true
-.directive('acFocus', function($timeout, $parse, safeApply) {
+.directive('acFocus', ["$timeout", "$parse", "safeApply", function($timeout, $parse, safeApply) {
     return {
         restrict: "A",
         link: function(scope, element, attributes) {
@@ -943,7 +945,7 @@ angular.module("acute.select", [])
             });
         }
     };
-})
+}])
 
 .directive('acSelectOnFocus', function() {
     return {
@@ -971,8 +973,8 @@ angular.module("acute.select", [])
             var expression = $attrs.acScrollTo;
             $scope.$watch(expression, function(newValue, oldValue) {
                 if (newValue != oldValue) {
-                    var scrollTop = $scope.$eval(expression);
-                    angular.element($element)[0].scrollTop = scrollTop;
+                var scrollTop = $scope.$eval(expression);
+                angular.element($element)[0].scrollTop = scrollTop;
                 }
             });
         }
@@ -1020,7 +1022,7 @@ angular.module("acute.select", [])
 })
 
 // safeApply service, courtesy Alex Vanston and Andrew Reutter
-.factory('safeApply', [function($rootScope) {
+.factory('safeApply', ['$rootScope', function($rootScope) {
     return function($scope, fn) {
         var phase = $scope.$root.$$phase;
         if (phase == '$apply' || phase == '$digest') {
