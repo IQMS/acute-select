@@ -1,4 +1,4 @@
-﻿/// <reference path="../lib/angular.1.2.1.js" />
+/// <reference path="../lib/angular.1.2.1.js" />
 
 // Directive that creates a searchable dropdown list.
 
@@ -158,7 +158,7 @@ angular.module("acute.select", [])
 
             // Create dropdown items based on the source data items
             $scope.loadItems = function(dataItems, selectedDataItem) {
-                var itemCount, itemIndex, item, key = $scope.keyField;
+                var itemCount, itemIndex, item;
 
                 if (angular.isArray(dataItems)) {
 
@@ -173,7 +173,7 @@ angular.module("acute.select", [])
                             // If not currently filtering
                             if (!$scope.searchText) {
                                 // Look for a matching item
-                                if (dataItem === selectedDataItem || (key && selectedDataItem && dataItem[key] == selectedDataItem[key])) {
+                                if (matches(dataItem, selectedDataItem)) {
                                     confirmSelection(item);
                                     foundSelected = true;
                                 }
@@ -220,6 +220,16 @@ angular.module("acute.select", [])
                     checkItemCount($scope.items);
                 }
             };
+			
+			
+		  function matches(dataItem, selectedDataItem){
+			var key = $scope.keyField;
+			if (key && selectedDataItem && dataItem[key] == selectedDataItem[key]){
+			  return true;
+			}
+			return $scope.settings.deepEquals ? angular.equals(dataItem, selectedDataItem) : dataItem === selectedDataItem;
+		  }
+
 
             function processSettings() {
                 if ($scope.acSettings) {
@@ -1060,6 +1070,7 @@ angular.module("acute.select", [])
         "minSearchLength": 0,
         "filterType": "contains",    // or start/startsWith, end/endsWith
         "showFilterOptions": false,
+        "deepEquals": false,
         "allowClear": true,
         "debug": false,
         "positionAbsolute": false    // Is the select as a whole being positioned using "position: absolute"?
