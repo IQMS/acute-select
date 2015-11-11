@@ -1,4 +1,4 @@
-/// <reference path="../lib/angular.1.2.1.js" />
+﻿/// <reference path="../lib/angular.1.2.1.js" />
 
 // Directive that creates a searchable dropdown list.
 
@@ -207,7 +207,7 @@ angular.module("acute.select", [])
                   item.index = index;
                 });
 
-                confirmSelection(item);
+                confirmSelection(item, false);
               }
             }
 
@@ -407,9 +407,7 @@ angular.module("acute.select", [])
         $scope.comboKeyHandler = function(event) {
           var keyCode = event.which || event.keyCode;
           if (keyCode === navKey.enter) {
-            if (customAddRequest()) {
-              confirmSelection(null);
-            }
+            $scope.addButtonClick();
           }
         };
 
@@ -556,7 +554,7 @@ angular.module("acute.select", [])
 
         $scope.addButtonClick = function() {
           if (customAddRequest()) {
-            confirmSelection(null);
+            confirmSelection($scope.selectedItem);
           }
         };
 
@@ -600,10 +598,12 @@ angular.module("acute.select", [])
           else {
             // Try adding as a custom item
             if (customAddRequest()) {
-              close = true;
+
+            } else {
+              $scope.comboText = null;
             }
           }
-
+          close = true;
           // If the pop-up is visible (i.e. not setting an initial selection)
           if ($scope.popupVisible) {
             fireChangeEvent();
@@ -784,9 +784,12 @@ angular.module("acute.select", [])
             }
           }
         }
-
+        $scope.clearClick = function (event){
+          clearSelection();
+          event.stopPropagation();
+        };
         function clearSelection() {
-          var oldConfirmedItem = $scope.confirmedItem;
+          confirmSelection(null);
           $scope.selectedItem = null;
           $scope.confirmedItem = null;
           $scope.modelUpdating = true;
@@ -794,10 +797,6 @@ angular.module("acute.select", [])
           $scope.initialSelection = null;
           $scope.scrollTo = 0;
           $scope.comboText = "";
-
-          if (oldConfirmedItem !== null) {
-            fireChangeEvent();
-          }
         }
 
         function ensureItemVisible(item) {
@@ -1075,6 +1074,7 @@ angular.module("acute.select", [])
       "showFilterOptions": false,
       "deepEquals": false,
       "allowClear": true,
+      "selectImageClass": 'ac-select-image',
       "debug": false,
       "positionAbsolute": false    // Is the select as a whole being positioned using "position: absolute"?
     };

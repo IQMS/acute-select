@@ -10,7 +10,8 @@
                     </div>
                     <span ng-hide="settings.comboMode">{{confirmedItem.text}}</span>
                 </td>
-                <td class="ac-select-image"></td>
+                <td ng-show="settings.allowClear && comboText" ng-click="clearClick($event)" class="icon-close-popup"></td>
+                <td ng-class="::settings.selectImageClass"></td>
             </tr>
             <!--Row to get the control width right, using the original select or the longest item text. Hidden at runtime.-->
             <tr class="ac-select-widener">
@@ -50,7 +51,7 @@
             <div class="ac-select-loading" ng-show="loading" ng-style="{ height: settings.itemHeight + 'px'}">Loading...</div>
         </div>
         <div class="ac-select-load-more" ng-show="allDataLoaded===false">
-            {{items.length}} items<!-- of {{matchingItemTotal}}--> 
+            {{items.length}} items<!-- of {{matchingItemTotal}}-->
             <span ng-click="loadMore()">{{loadMessage}}</span>
         </div>
     </div>
