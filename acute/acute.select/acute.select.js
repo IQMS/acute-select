@@ -154,6 +154,9 @@ angular.module("acute.select", [])
             $scope.initialItem = $scope.getItemFromDataItem($scope.model, 0);
             $scope.confirmedItem = $scope.selectedItem = $scope.initialItem;
             $scope.comboText = $scope.confirmedItem ? $scope.confirmedItem.text : "";
+          } else {
+            $scope.initialSelection = $scope.initialItem = $scope.confirmedItem = $scope.selectedItem = null;
+            $scope.comboText = '';
           }
         };
 
@@ -790,6 +793,9 @@ angular.module("acute.select", [])
         };
         function clearSelection() {
           confirmSelection(null);
+          if (!$scope.popupVisible) {
+            fireChangeEvent();
+          }
           $scope.selectedItem = null;
           $scope.confirmedItem = null;
           $scope.modelUpdating = true;
