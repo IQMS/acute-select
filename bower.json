@@ -1,0 +1,12 @@
+{
+	"name":acute-select,
+	"main": [
+		"./acute/acute.select/acute.select.js",
+		"./acute/acute.select/acute.select.css",
+		"./acute/acute.select/template/acute.select.html"
+	],
+	  "dependencies": {
+    "angular": "1.4.7",
+    "angular-touch": "1.4.7"
+  },
+}
