@@ -459,7 +459,7 @@ angular.module("acute.select", [])
             // All data is now loaded
             $scope.allDataLoaded = true;
             // Clear loadOnOpen flag to avoid re-loading when dropdown is next opened
-            $scope.settings.loadOnOpen = false;
+            $scope.settings.loadOnOpen = $scope.settings.alwaysLoadOnOpen;
           }
           else {
 
@@ -514,7 +514,7 @@ angular.module("acute.select", [])
         };
 
         $scope.ensureDataLoaded = function() {
-          if (!$scope.allDataLoaded && $scope.dataFunction && $scope.settings.loadOnOpen) {
+          if ((!$scope.allDataLoaded || $scope.settings.alwaysLoadOnOpen) && $scope.dataFunction && $scope.settings.loadOnOpen) {
             // Load initial data (args are callback function, search text, item offset and filter type)
             $scope.dataFunction($scope.dataCallback, "", 0, $scope.settings.filterType);
           }
@@ -1074,6 +1074,7 @@ angular.module("acute.select", [])
       "comboSelectOnFocus": true,
       "loadOnCreate": true,
       "loadOnOpen": false,      // If true, while loadOnCreate is false, the load function will be called when the dropdown opens
+      "alwaysLoadOnOpen": true,
       "allowCustomText": false,
       "minSearchLength": 0,
       "filterType": "contains",    // or start/startsWith, end/endsWith
